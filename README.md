@@ -25,7 +25,7 @@ AutoRegressive Decoder 를 사용하기 때문에 원하는 구조대로 GT 를 
 
     - 기존 AiV 홈페이지에 소개된 OCR 방식인 문자(character) 단위 인식 모델에서 단어(word) 단위 인식 모델로 제안 </br>
     *(실제 AiV 에서 OCR 을 처리하는 내부 로직을 알 수 없어 홈페이지 정보로 가정했습니다.)*
-    - 각 방법의 장단점이 있지만 새로운 방식으로 해결해보고 싶었습니다. </br>
+    - 각 방법의 장단점이 있지만 새로운 방식으로 제안해 봤습니다. </br>
 
 
 3. 다양한 태스크로 확장 가능한 구조 </br>
@@ -210,10 +210,14 @@ Answer: <s_ocr>P5I</s_ocr><s_box>60<sep/>178<sep/>300<sep/>140</s_box>
 ```
 
 ## Visualization
-<img src="./assets/result1.png" alt="result1" width="300" height="300"> 
-<img src="./assets/result2.png" alt="result2" width="300" height="300"></br>
-<img src="./assets/result3.png" alt="result3" width="300" height="300"> 
-<img src="./assets/result4.png" alt="result4" width="300" height="300"> 
+<p align="center">
+  <img src="./assets/result1.png" alt="result1" width="300"/>
+  <img src="./assets/result2.png" alt="result2" width="300"/>
+</p>
+<p align="center">
+  <img src="./assets/result3.png" alt="result3" width="300"/>
+  <img src="./assets/result4.png" alt="result4" width="300"/>
+</p>
 
 ## Evaluation
 
