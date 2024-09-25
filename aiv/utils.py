@@ -50,7 +50,7 @@ def denormalize_coordinates(image_width: int, image_height: int, normalized_x: f
     return x, y, w, h
 
 
-def visualization(pil_image: Any, text: str, box: Tuple[float, float, float, float], font: str) -> Any:
+def visualization(pil_image: Any, text: str, box: Tuple[float, float, float, float], font: str="arial.ttf") -> Any:
     """
     이미지에 텍스트와 사각형을 시각화합니다.
 
