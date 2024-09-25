@@ -34,6 +34,7 @@ class DonutDataset(Dataset):
         dataset_name_or_path: str,
         donut_model: PreTrainedModel,
         max_length: int,
+        transforms: Compose,
         split: str = "train",
         ignore_id: int = -100,
         task_start_token: str = "<s>",
@@ -49,6 +50,7 @@ class DonutDataset(Dataset):
         self.task_start_token = task_start_token
         self.prompt_end_token = prompt_end_token if prompt_end_token else task_start_token
         self.sort_json_key = sort_json_key
+        self.transforms = transforms
 
         self.dataset = load_dataset(dataset_name_or_path, split=self.split)
         self.dataset_length = len(self.dataset)
@@ -95,8 +97,11 @@ class DonutDataset(Dataset):
         """
         sample = self.dataset[idx]
 
+        image = sample["image"]
+        image = self.transforms(image)
+
         # input_tensor
-        input_tensor = self.donut_model.encoder.prepare_input(sample["image"], random_padding=self.split == "train")
+        input_tensor = self.donut_model.encoder.prepare_input(image, random_padding=self.split == "train")
 
         # input_ids
         processed_parse = random.choice(self.gt_token_sequences[idx])  # can be more than one, e.g., DocVQA Task 1
