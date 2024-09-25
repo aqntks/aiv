@@ -12,7 +12,6 @@ AutoRegressive Decoder 를 사용하기 때문에 원하는 구조대로 GT 를 
 
 단순히 OCR 을 넘어 프롬프트를 통해 다른 태스크로 확장시킬 수 있는 구조를 선정했습니다.
 
-</br>
 
 # 방법론 선정 이유
 
@@ -21,7 +20,6 @@ AutoRegressive Decoder 를 사용하기 때문에 원하는 구조대로 GT 를 
     - 해당 문제를 해결하기 위해 하나의 아키텍쳐를 사용하고 후처리를 최소화 할 수 있는 방식 사용 
     - 하나의 아키텍처만 사용하기 때문에 관리가 용이합니다.
 
-    </br>
 
 2. 기존 방식과 다른 방식 제안 </br>
 
@@ -29,14 +27,12 @@ AutoRegressive Decoder 를 사용하기 때문에 원하는 구조대로 GT 를 
     *(실제 AiV 에서 OCR 을 처리하는 내부 로직을 알 수 없어 홈페이지 정보로 가정했습니다.)*
     - 각 방법의 장단점이 있지만 새로운 방식으로 해결해보고 싶었습니다. </br>
 
-    </br>
 
 3. 다양한 태스크로 확장 가능한 구조 </br>
 
     - 단순히 하나의 이미지에서 하나의 정보만 추출하는 것을 넘어서, 여러 정보를 추출하게 되는 경우를 위한 확장성 고려
     - 프롬프트를 활용하여 OCR 의 결과를 커스텀 하거나, 태스크를 추가할 수 있습니다.
 
-</br>
 
 # Model
 
@@ -49,7 +45,6 @@ Donut Offical Architecture Code 에서 핵심 아키텍처 코드는 활용하�
 
 <img src="./assets/donut_architecture.png" alt="donut_architecture"></br>
 
-</br>
 
 ## 2. Model Architecture
 
@@ -64,7 +59,6 @@ Donut Offical Architecture Code 에서 핵심 아키텍처 코드는 활용하�
 - 또한 Transformer의 특징으로 강력한 Image Backbone 으로 사용 가능합니다.
 - 연산량이 많다는 단점이 존재하지만 실제 OnDevice나 Embedded 환경에서의 최적화가 필요하다면, 이미지 Encoder 를 CNN base model 로 변경하거나, Patch Embedding 을 사용하는 방식으로 개선가능합니다.</br>
 
-</br>
 
 ### [ Decoder ]
 - 텍스트 디코더는 BartDecoder 입니다.</br>
@@ -74,7 +68,6 @@ Donut Offical Architecture Code 에서 핵심 아키텍처 코드는 활용하�
 - 예1) 하나의 모델을 통해 Bolt 에 기입된 OCR, Nut 에 기입된 OCR 분리 </br>
 - 예2) 하나의 모델을 통해 전체 OCR 또는, 특정 조건에 해당하는 OCR 정보만 추출 가능 </br>
 
-</br>
 
 ## 3. Model Method
 
@@ -90,7 +83,6 @@ Donut Offical Architecture Code 에서 핵심 아키텍처 코드는 활용하�
 - AutoRegressive 하게 토큰 예측
 - 최종 예측 결과 Json Format 으로 파싱
 
-</br>
 
 ## 4. 사전 학습 모델
 [huggingface : naver-clova-ix/donut-base](https://huggingface.co/naver-clova-ix/donut-base)
@@ -101,7 +93,6 @@ Donut Offical Architecture Code 에서 핵심 아키텍처 코드는 활용하�
 
 <img src="./assets/pretrain_data.png" alt="pretrain_data"></br>
 
-</br>
 
 # Dataset
 
@@ -114,7 +105,6 @@ Donut Offical Architecture Code 에서 핵심 아키텍처 코드는 활용하�
 
 <img src="./assets/baseline.BMP" alt="baseline" width="150" height="150"></br>
 
-</br>
 
 ### [ Method 1 ] - 회색 톤의 랜덤 배경 생성 (Code)
 ``` python
@@ -137,8 +127,6 @@ def create_random_background_image(width, height):
 
 단점 : 디테일을 살리기 위해 실제 데이터에 Fit 한 코드 작업이 필요 </br>
 
-</br>
-
 ### [ Method 2 ] - Diffusion 을 사용한 Inpaint
 사용 모델 : [RealVisXL V5.0 Lightning](https://huggingface.co/SG161222/RealVisXL_V5.0_Lightning) </br>
 <img src="./assets/sb_background.png" alt="sb" width="150" height="150"> </br>
@@ -146,8 +134,6 @@ def create_random_background_image(width, height):
 장점 : Diffusion 모델을 사용하여 배경 Feature가 최대한 회손되지 않은 채 유지
 
 단점 : Fitting 된 모델이 없어 글자 영역의 제거가 완벽하게 이뤄지지 않음
-
-</br>
 
 ### [ Method 3 ] - 포토샵 도구 (GIMP) 사용
 
@@ -157,19 +143,13 @@ def create_random_background_image(width, height):
 
 단점 : 데이터의 pixel feature 정보가 망가질 수 있음
 
-</br>
-
 -> 과제라는 한정된 시간에 가장 유효한 방법인 [ Method 3 ] 방식을 통해 생성했습니다.
-
-</br>
 
 ## 2. 데이터 생성
 
 **generate_image.py**  파일을 통해 학습 Image, GT 생성 </br>
 </br>
 Train / Validation / Test : 1000 / 200 / 100 장 데이터 생성
-
-</br>
 
 ### [ 최종 생성 데이터 ]
 
@@ -185,12 +165,7 @@ Train / Validation / Test : 1000 / 200 / 100 장 데이터 생성
             }
 ```
 
-</br>
-
-
 ## 3. Augmentation
-
-</br>
 
 ### 구현한 augmentation
 
@@ -215,20 +190,15 @@ random_crop # 랜덤 크롭
 
 ```
 
-
 - DataLoader 에서 Augmetation 을 적용하였습니다.
 
 - 실제 데이터의 특성을 고려해 랜덤 회전 및 밝기, 대비, 채도, 가우시안 블러를 사용했습니다. 
 
 - 글자에 영향을 줄 수 있는 좌우 반전, 크롭, 지우기는 성능 이슈로 활성화하지 않았습니다.
 
-</br>
-
 ### Augmentation 결과 (vis input)
 
 <img src="./assets/augmentation.png" alt="augmentation"> </br>
-
-</br>
 
 # Result
 
@@ -245,16 +215,12 @@ Answer: <s_ocr>P5I</s_ocr><s_box>60<sep/>178<sep/>300<sep/>140</s_box>
 <img src="./assets/result3.png" alt="result3" width="300" height="300"> 
 <img src="./assets/result4.png" alt="result4" width="300" height="300"> 
 
-</br>
-
 ## Evaluation
 
 | Text   | BOX    | BOX   |
 |--------|--------|--------|
 |Accuracy|Precison|Recall  |
 | 0.95   | 0.93   | 0.93   |
-
-</br>
 
 ## GT -> PRED 분석
 Test 결과 40개를 가져왔습니다.
@@ -311,16 +277,12 @@ Test 결과 40개를 가져왔습니다.
 
 사전학습 모델에서 비슷한 형태로 학습된 4로 인해 Hallucination 이 발생했다고 판단됩니다.
 
-</br>
-
 #### 해결 방안 1.
 - 학습 데이터에 마지막에 1이 들어가는 데이터를 추가 생성 학습
 #### 해결 방안 2.
 - 타켓 문자에 4가 없기 때문에 타겟 문자 (15IPTUVY) 만 검출 될 수 있도록 softmax, argmax 단계에서 타겟 외 token masking 적용
 #### 해결 방안 3.
 - (가능하다면) 1과 4가 헷갈리지 않도록 4 데이터도 포함 학습
-
-</br>
 
 # Limitation
 
