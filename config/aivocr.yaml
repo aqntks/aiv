@@ -1,0 +1,60 @@
+
+result_path: "./result"
+pretrained_model_name: "naver-clova-ix/donut-base"
+dataset_paths: ["dataset/aivocr"] 
+sort_json_key: False 
+train_batch_sizes: [4]
+val_batch_sizes: [1]
+input_size: [640, 640] 
+max_length: 30
+align_long_axis: False
+num_nodes: 1
+seed: 42
+lr: 3e-5
+warmup_steps: 300
+num_training_samples_per_epoch: 800
+max_epochs: 100
+max_steps: -1
+num_workers: 8
+val_check_interval: 1.0
+check_val_every_n_epoch: 3
+gradient_clip_val: 1.0
+num_sanity_val_steps: 0
+precision: 16
+verbose: True
+
+augmentation:
+  resize:
+    enabled: true
+  random_horizontal_flip:
+    enabled: false
+    p: 0.5  # 무작위 좌우 반전 확률
+  random_rotation:
+    enabled: true
+    degrees: [-30, 30]  # 회전 각도 범위
+  random_crop:
+    enabled: false
+    size: 224  # 무작위 자르기 크기
+  color_jitter:
+    enabled: true
+    brightness: 0.4  # 밝기 조정
+    contrast: 0.4    # 대비 조정
+    saturation: 0.4  # 채도 조정
+    hue: 0.1         # 색조 조정
+  gaussian_blur:
+    enabled: true
+    kernel_size: [5, 9]  # 커널 사이즈
+    sigma: [0.1, 5]      # 시그마 값 범위
+  to_tensor:
+    enabled: false 
+  normalize:
+    enabled: false
+    mean: [0.485, 0.456, 0.406] 
+    std: [0.229, 0.224, 0.225] 
+  random_erasing:
+    enabled: false
+    p: 0.5 
+    scale: [0.02, 0.33]  # 지워질 영역의 스케일 범위
+    ratio: [0.3, 3.3]    # 지워질 영역의 가로 세로 비율 범위
+    value: random  # 지워질 영역에 채워질 값 (랜덤)
+
