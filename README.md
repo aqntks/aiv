@@ -72,23 +72,17 @@ def process_task(ch, method, properties, body):
 ### 1. Threading 에서의 예외 처리 강화
 - 예외 처리를 통해 에러가 발생해도 종료되지 않게 처리했습니다.
 ```python
-def worker_thread():
+def worker_thread(queue_name):
     """
     RabbitMQ에서 작업을 가져와 처리하는 워커 스레드를 실행하는 함수입니다.
     큐에서 작업을 하나씩 가져와 처리하고, 처리 완료 후 ACK를 전송합니다.
     예외 발생 시 이를 잡아 스레드가 비정상적으로 종료되지 않도록 보호합니다.
     """
-
+    
     try:
         connection, channel = create_channel()
-        # durable 옵션을 True 로 사용하여 서버가 재시작되어도 큐와 메시지가 유지되도록 설정
-        channel.queue_declare(queue='aiv_train_queue', durable=True)
 
-        # 한 번에 하나의 작업만 처리할 수 있도록 설정
-        channel.basic_qos(prefetch_count=1)
-
-        # 작업을 처리할 콜백 함수 설정
-        channel.basic_consume(queue='aiv_train_queue', on_message_callback=process_task)
+        channel.basic_consume(queue=queue_name, on_message_callback=process_task)
 
         logging.info("Worker started. Waiting for tasks...")
         channel.start_consuming()
